@@ -1,8 +1,12 @@
 package mk.ukim.finki.elibrary.config;
 
+import mk.ukim.finki.elibrary.model.Author;
 import mk.ukim.finki.elibrary.model.Country;
+import mk.ukim.finki.elibrary.model.dto.BookDTO;
+import mk.ukim.finki.elibrary.model.enums.Category;
 import mk.ukim.finki.elibrary.model.enums.Role;
 import mk.ukim.finki.elibrary.service.AuthorService;
+import mk.ukim.finki.elibrary.service.BookService;
 import mk.ukim.finki.elibrary.service.CountryService;
 import mk.ukim.finki.elibrary.service.UserService;
 import org.springframework.stereotype.Component;
@@ -19,10 +23,13 @@ public class DataInitializer {
 
     private final UserService userService;
 
-    public DataInitializer(CountryService countryService, AuthorService authorService, UserService userService) {
+    private  final BookService bookService;
+
+    public DataInitializer(CountryService countryService, AuthorService authorService, UserService userService, BookService bookService) {
         this.countryService = countryService;
         this.authorService = authorService;
         this.userService = userService;
+        this.bookService = bookService;
     }
 
 
@@ -36,8 +43,14 @@ public class DataInitializer {
 
         List<Country> countries = this.countryService.findAll();
 
+
         this.authorService.save("J. K.","Rowling",countries.get(0).getId());
         this.authorService.save("Ernest","Hemingway",countries.get(1).getId());
+
+        List<Author> authors = this.authorService.findAll();
+
+        BookDTO bookDTO = new BookDTO("Kniga 1", Category.BIOGRAPHY,authors.get(0).getId(),2);
+        this.bookService.save(bookDTO);
 
     }
 }
